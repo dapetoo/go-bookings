@@ -39,7 +39,7 @@ func doSomething() {
 	timer.Reset(10) // this will panic
 }
 
-const portNumber = ":8081"
+const portNumber = ":8080"
 
 var app config.AppConfig
 var session *scs.SessionManager
