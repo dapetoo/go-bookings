@@ -25,7 +25,7 @@ func (h *handler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	rw.WriteHeader(http.StatusOK)
 }
 
-func enhanceSentryEvent(handler http.HandlerFunc) http.HandlerFunc {
+func EnhanceSentryEvent(handler http.HandlerFunc) http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		if hub := sentry.GetHubFromContext(r.Context()); hub != nil {
 			hub.Scope().SetTag("someRandomTag", "maybeYouNeedIt")
@@ -77,10 +77,6 @@ func main() {
 		fmt.Printf("Sentry initialization failed: %v\n", err)
 	}
 
-	// Create an instance of sentry
-	//sentryHandler := sentryhttp.New(sentryhttp.Options{
-	//	Repanic: true,
-	//})
 	sentry.CaptureMessage("It works!")
 	defer sentry.Flush(2 * time.Second)
 
@@ -114,7 +110,7 @@ func main() {
 	//http.HandleFunc("/", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Home)))
 	//http.HandleFunc("/about", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.About)))
 	//http.HandleFunc("/service", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Service)))
-	//http.HandleFunc("/contact", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Contact)))
+	///http.HandleFunc("/contact", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Contact)))
 
 	srv := &http.Server{
 		Addr:    portNumber,
@@ -122,7 +118,7 @@ func main() {
 	}
 
 	err = srv.ListenAndServe()
-	//log.Fatal(err)
+	log.Fatal(err)
 
 	//_ = http.ListenAndServe(portNumber, nil)
 
