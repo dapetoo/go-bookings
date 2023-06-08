@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
-	"github.com/dapetoo/go-bookings/pkg/config"
-	"github.com/dapetoo/go-bookings/pkg/handlers"
-	"github.com/dapetoo/go-bookings/pkg/render"
+	"github.com/dapetoo/go-bookings/internal/config"
+	"github.com/dapetoo/go-bookings/internal/handlers"
+	"github.com/dapetoo/go-bookings/internal/render"
 	"github.com/getsentry/sentry-go"
 	"github.com/rollbar/rollbar-go"
 	"log"
