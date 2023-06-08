@@ -218,7 +218,7 @@
                     title = "",
                 } = c;
 
-                const {value: formValues} = await Swal.fire({
+                const {value: result} = await Swal.fire({
                     title: title,
                     html: msg,
                     backdrop: false,
@@ -243,8 +243,17 @@
                     }
                 })
 
-                if (formValues) {
-                    Swal.fire(JSON.stringify(formValues))
+                if (result) {
+                    if (result.dismiss !== Swal.DismissReason.cancel) {
+                        if (result.value[0] !== "") {
+                            if (c.callback !== undefined) {
+                                c.callback(result.value);
+                            }
+                        } else {
+                            c.callback(false);
+                        }
+                    } else {
+                        c.callback(false);
                 }
             }
 
@@ -254,7 +263,7 @@
                 error: error,
                 custom: custom,
             }
-        }
+        }}
 
     </script>
 
