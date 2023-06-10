@@ -2,11 +2,6 @@ package forms
 
 type errors map[string][]string
 
-// Valid returns true if there are no errors, otherwise false
-func (f *Form) Valid() bool {
-	return len(f.Errors) == 0
-}
-
 // Add adds an error message for a given field to the map
 func (e errors) Add(field, message string) {
 	e[field] = append(e[field], message)

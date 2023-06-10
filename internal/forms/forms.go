@@ -41,19 +41,23 @@ func (f *Form) Has(field string, r *http.Request) bool {
 	return true
 }
 
-// MinLength checks for string minimum length
+// MinLength check for minimum length
 func (f *Form) MinLength(field string, length int, r *http.Request) bool {
 	x := r.Form.Get(field)
 	if len(x) < length {
-		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long"))
+		f.Errors.Add(field, fmt.Sprintf("This field must be at least %d characters long", length))
 		return false
 	}
 	return true
-
 }
 
 func (f *Form) IsEmail(field string) {
 	if !govalidator.IsEmail(f.Get("email")) {
 		f.Errors.Add("email", "Invalid email address")
 	}
+}
+
+// Valid returns true if there are no errors, otherwise false
+func (f *Form) Valid() bool {
+	return len(f.Errors) == 0
 }
