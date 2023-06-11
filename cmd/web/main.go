@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/dapetoo/go-bookings/internal/config"
 	"github.com/dapetoo/go-bookings/internal/handlers"
+	"github.com/dapetoo/go-bookings/internal/models"
 	"github.com/dapetoo/go-bookings/internal/render"
 	"github.com/getsentry/sentry-go"
 	"github.com/rollbar/rollbar-go"
@@ -80,37 +82,12 @@ func main() {
 	sentry.CaptureMessage("It works!")
 	defer sentry.Flush(2 * time.Second)
 
-	//Change this to true when in production
-	app.InProduction = false
-
-	//Session Management
-	session = scs.New()
-	session.Lifetime = 24 * time.Hour
-	session.Cookie.Persist = true
-	session.Cookie.SameSite = http.SameSiteLaxMode
-	session.Cookie.Secure = app.InProduction //Set to true in production
-
-	app.Session = session
-
-	tc, err := render.CreateTemplateCache()
+	err := run()
 	if err != nil {
-		log.Fatal("cannot create template cache")
+		log.Fatal(err)
 	}
 
-	app.TemplateCache = tc
-
-	app.UseCache = false
-
-	repo := handlers.NewRepo(&app)
-
-	handlers.NewHandlers(repo)
-
-	render.NewTemplates(&app)
-
-	//http.HandleFunc("/", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Home)))
-	//http.HandleFunc("/about", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.About)))
-	//http.HandleFunc("/service", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Service)))
-	///http.HandleFunc("/contact", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Contact)))
+	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
 	srv := &http.Server{
 		Addr:    portNumber,
@@ -118,8 +95,40 @@ func main() {
 	}
 
 	err = srv.ListenAndServe()
-	log.Fatal(err)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//http.HandleFunc("/", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Home)))
+}
 
-	//_ = http.ListenAndServe(portNumber, nil)
+func run() error {
+	// what am I going to put in the session
+	gob.Register(models.Reservation{})
 
+	// change this to true when in production
+	app.InProduction = false
+
+	// set up the session
+	session = scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.InProduction
+
+	app.Session = session
+
+	tc, err := render.CreateTemplateCache()
+	if err != nil {
+		log.Fatal("cannot create template cache")
+		return err
+	}
+
+	app.TemplateCache = tc
+	app.UseCache = false
+
+	repo := handlers.NewRepo(&app)
+	handlers.NewHandlers(repo)
+
+	render.NewTemplates(&app)
+	return nil
 }
