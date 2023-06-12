@@ -15,7 +15,7 @@ var testApp config.AppConfig
 func TestMain(m *testing.M) {
 
 	// change this to true when in production
-	app.InProduction = false
+	app.InProduction = true
 
 	// set up the session
 	session = scs.New()

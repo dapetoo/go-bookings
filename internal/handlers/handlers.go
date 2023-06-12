@@ -86,7 +86,10 @@ func (m *Repository) Majors(w http.ResponseWriter, r *http.Request) {
 
 // Availability renders the search availability page
 func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "search-availability.page.tmpl", &models.TemplateData{})
+	err := render.RenderTemplate(w, r, "search-availability.page.tmpl", &models.TemplateData{})
+	if err != nil {
+		return
+	}
 }
 
 type jsonResponse struct {
