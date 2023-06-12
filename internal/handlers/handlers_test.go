@@ -26,6 +26,20 @@ var theTests = []struct {
 	{"sa", "/search-availability", "GET", http.StatusOK, []postData{}},
 	{"mr", "/make-reservation", "GET", http.StatusOK, []postData{}},
 	{"gs", "/generals-quarters", "GET", http.StatusOK, []postData{}},
+	{"post-search-avail", "/search-availability", "POST", http.StatusOK, []postData{
+		{Key: "start", Value: "2021-01-01"},
+		{Key: "end", Value: "2021-01-02"},
+	}},
+	{"post-search-availability-json", "/search-availability-json", "POST", http.StatusOK, []postData{
+		{Key: "start", Value: "2021-01-01"},
+		{Key: "end", Value: "2021-01-02"},
+	}},
+	{"make-reservation", "/make-reservation", "POST", http.StatusOK, []postData{
+		{Key: "first_name", Value: "John"},
+		{Key: "last_name", Value: "Smith"},
+		{Key: "email", Value: "john@doe.com"},
+		{Key: "phone", Value: "555-555-555"},
+	}},
 }
 
 func TestHandlers(t *testing.T) {
@@ -62,5 +76,6 @@ func TestHandlers(t *testing.T) {
 		if res.StatusCode != e.expectedStatusCode {
 			t.Errorf("for %s, expected %d but got %d", e.name, e.expectedStatusCode, res.StatusCode)
 		}
+
 	}
 }
