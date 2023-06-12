@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/gob"
+	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/dapetoo/go-bookings/internal/config"
 	"github.com/dapetoo/go-bookings/internal/models"
@@ -9,13 +10,17 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/justinas/nosurf"
+	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 	"time"
 )
 
 var session *scs.SessionManager
 var app config.AppConfig
+var pathToTemplates = "./../../templates"
+var functions = template.FuncMap{}
 
 func getRoute() http.Handler {
 	// what am I going to put in the session
@@ -93,4 +98,38 @@ func NoSurf(next http.Handler) http.Handler {
 // SessionLoad loads and saves session data for current request
 func SessionLoad(next http.Handler) http.Handler {
 	return session.LoadAndSave(next)
+}
+
+func CreateTestTemplateCache() (map[string]*template.Template, error) {
+
+	myCache := map[string]*template.Template{}
+
+	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.tmpl", pathToTemplates))
+	if err != nil {
+		return myCache, err
+	}
+
+	for _, page := range pages {
+		name := filepath.Base(page)
+		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
+		if err != nil {
+			return myCache, err
+		}
+
+		matches, err := filepath.Glob(fmt.Sprintf("%s/*.page.tmpl", pathToTemplates))
+		if err != nil {
+			return myCache, err
+		}
+
+		if len(matches) > 0 {
+			ts, err = ts.ParseGlob(fmt.Sprintf("%s/*.page.tmpl", pathToTemplates))
+			if err != nil {
+				return myCache, err
+			}
+		}
+
+		myCache[name] = ts
+	}
+
+	return myCache, nil
 }
