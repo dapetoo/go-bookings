@@ -22,7 +22,7 @@ var app config.AppConfig
 var pathToTemplates = "./../../templates"
 var functions = template.FuncMap{}
 
-func getRoute() http.Handler {
+func getRoutes() http.Handler {
 	// what am I going to put in the session
 	gob.Register(models.Reservation{})
 
@@ -38,7 +38,7 @@ func getRoute() http.Handler {
 
 	app.Session = session
 
-	tc, err := render.CreateTemplateCache()
+	tc, err := CreateTestTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
 	}
