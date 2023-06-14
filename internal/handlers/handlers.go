@@ -42,6 +42,11 @@ func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	render.RenderTemplate(w, r, "contact.page.tmpl", &models.TemplateData{})
 }
 
+func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
+	log.Println("Contact page")
+	render.RenderTemplate(w, r, "about.page.tmpl", &models.TemplateData{})
+}
+
 func (m *Repository) Service(w http.ResponseWriter, r *http.Request) {
 	log.Println("Service page")
 	render.RenderTemplate(w, r, "service.page.tmpl", &models.TemplateData{})
