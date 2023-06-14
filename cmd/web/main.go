@@ -4,9 +4,9 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
-	"github.com/dapetoo/go-bookings/helpers"
 	"github.com/dapetoo/go-bookings/internal/config"
 	"github.com/dapetoo/go-bookings/internal/handlers"
+	"github.com/dapetoo/go-bookings/internal/helpers"
 	"github.com/dapetoo/go-bookings/internal/models"
 	"github.com/dapetoo/go-bookings/internal/render"
 	"log"
@@ -24,7 +24,8 @@ var errorLog *log.Logger
 
 func main() {
 
-	initRollbar()
+	//initRollbar()
+	initHoneyComb()
 	initSentry()
 
 	err := run()

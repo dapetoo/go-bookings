@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dapetoo/go-bookings/helpers"
 	"github.com/dapetoo/go-bookings/internal/config"
 	"github.com/dapetoo/go-bookings/internal/forms"
+	"github.com/dapetoo/go-bookings/internal/helpers"
 	"github.com/dapetoo/go-bookings/internal/models"
 	"github.com/dapetoo/go-bookings/internal/render"
 	"log"

@@ -12,7 +12,7 @@ func TestNoSurf(t *testing.T) {
 
 	switch v := h.(type) {
 	case http.Handler:
-		//Do nothing
+		// do nothing
 	default:
 		t.Error(fmt.Sprintf("type is not http.Handler but is %T", v))
 	}
@@ -24,19 +24,7 @@ func TestSessionLoad(t *testing.T) {
 
 	switch v := h.(type) {
 	case http.Handler:
-		//Do nothing
-	default:
-		t.Error(fmt.Sprintf("type is not http.Handler but is %T", v))
-	}
-}
-
-func TestWriteToConsole(t *testing.T) {
-	var myH myHandler
-	h := WriteToConsole(&myH)
-
-	switch v := h.(type) {
-	case http.Handler:
-		//Do nothing
+		// do nothing
 	default:
 		t.Error(fmt.Sprintf("type is not http.Handler but is %T", v))
 	}
