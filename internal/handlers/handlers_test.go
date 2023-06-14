@@ -3,79 +3,77 @@ package handlers
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 )
 
 type postData struct {
-	Key   string
-	Value string
+	key   string
+	value string
 }
 
 var theTests = []struct {
 	name               string
 	url                string
 	method             string
-	expectedStatusCode int
 	params             []postData
+	expectedStatusCode int
 }{
-	{"home", "/", "GET", http.StatusOK, []postData{}},
-	{"about", "/about", "GET", http.StatusOK, []postData{}},
-	{"contact", "/contact", "GET", http.StatusOK, []postData{}},
-	{"gs", "/generals-quarters", "GET", http.StatusOK, []postData{}},
-	{"ms", "/majors-suite", "GET", http.StatusOK, []postData{}},
-	{"sa", "/search-availability", "GET", http.StatusOK, []postData{}},
-	{"mr", "/make-reservation", "GET", http.StatusOK, []postData{}},
-	{"gs", "/generals-quarters", "GET", http.StatusOK, []postData{}},
-	{"post-search-avail", "/search-availability", "POST", http.StatusOK, []postData{
-		{Key: "start", Value: "2021-01-01"},
-		{Key: "end", Value: "2021-01-02"},
-	}},
-	{"post-search-availability-json", "/search-availability-json", "POST", http.StatusOK, []postData{
-		{Key: "start", Value: "2021-01-01"},
-		{Key: "end", Value: "2021-01-02"},
-	}},
-	{"make-reservation", "/make-reservation", "POST", http.StatusOK, []postData{
-		{Key: "first_name", Value: "John"},
-		{Key: "last_name", Value: "Smith"},
-		{Key: "email", Value: "john@doe.com"},
-		{Key: "phone", Value: "555-555-555"},
-	}},
+	{"home", "/", "GET", []postData{}, http.StatusOK},
+	{"about", "/about", "GET", []postData{}, http.StatusOK},
+	{"generals-quarters", "/generals-quarters", "GET", []postData{}, http.StatusOK},
+	{"majors-suite", "/majors-suite", "GET", []postData{}, http.StatusOK},
+	{"search-availability", "/search-availability", "GET", []postData{}, http.StatusOK},
+	{"contact", "/contact", "GET", []postData{}, http.StatusOK},
+	{"make-res", "/make-reservation", "GET", []postData{}, http.StatusOK},
+	{"post-search-availability", "/search-availability", "Post", []postData{
+		{key: "start", value: "2020-01-01"},
+		{key: "end", value: "2020-01-02"},
+	}, http.StatusOK},
+	{"post-search-availability-json", "/search-availability-json", "Post", []postData{
+		{key: "start", value: "2020-01-01"},
+		{key: "end", value: "2020-01-02"},
+	}, http.StatusOK},
+	{"make-reservation", "/make-reservation", "Post", []postData{
+		{key: "first_name", value: "John"},
+		{key: "last_name", value: "Smith"},
+		{key: "email", value: "me@here.com"},
+		{key: "phone", value: "555-555-5555"},
+	}, http.StatusOK},
 }
 
 func TestHandlers(t *testing.T) {
 	routes := getRoutes()
 
-	// Create a new server using the "routes" just created
-	// and then start the server
 	ts := httptest.NewTLSServer(routes)
 	defer ts.Close()
 
-	// Loop through the tests
 	for _, e := range theTests {
-		// Create a new request
-		req, _ := http.NewRequest(e.method, ts.URL+e.url, nil)
-
-		// Add any needed form data
-		if len(e.params) > 0 {
-			q := req.URL.Query()
-			for _, x := range e.params {
-				q.Add(x.Key, x.Value)
+		if e.method == "GET" {
+			resp, err := ts.Client().Get(ts.URL + e.url)
+			if err != nil {
+				t.Log(err)
+				t.Fatal(err)
 			}
 
-			req.URL.RawQuery = q.Encode()
-		}
+			if resp.StatusCode != e.expectedStatusCode {
+				t.Errorf("for %s expected %d but got %d", e.name, e.expectedStatusCode, resp.StatusCode)
+			}
+		} else {
+			values := url.Values{}
+			for _, x := range e.params {
+				values.Add(x.key, x.value)
+			}
 
-		// Make the request
-		res, err := ts.Client().Do(req)
-		if err != nil {
-			t.Log(err)
-			t.Fatal(err)
-		}
+			resp, err := ts.Client().PostForm(ts.URL+e.url, values)
+			if err != nil {
+				t.Log(err)
+				t.Fatal(err)
+			}
 
-		// Check the status code
-		if res.StatusCode != e.expectedStatusCode {
-			t.Errorf("for %s, expected %d but got %d", e.name, e.expectedStatusCode, res.StatusCode)
+			if resp.StatusCode != e.expectedStatusCode {
+				t.Errorf("for %s expected %d but got %d", e.name, e.expectedStatusCode, resp.StatusCode)
+			}
 		}
-
 	}
 }
