@@ -4,37 +4,16 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
+	"github.com/dapetoo/go-bookings/helpers"
 	"github.com/dapetoo/go-bookings/internal/config"
 	"github.com/dapetoo/go-bookings/internal/handlers"
 	"github.com/dapetoo/go-bookings/internal/models"
 	"github.com/dapetoo/go-bookings/internal/render"
-	"github.com/getsentry/sentry-go"
 	"log"
 	"net/http"
 	"os"
 	"time"
 )
-
-type handler struct{}
-
-func (h *handler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	if hub := sentry.GetHubFromContext(r.Context()); hub != nil {
-		hub.WithScope(func(scope *sentry.Scope) {
-			scope.SetExtra("unwantedQuery", "someQueryDataMaybe")
-			hub.CaptureMessage("User provided unwanted query string, but we recovered just fine")
-		})
-	}
-	rw.WriteHeader(http.StatusOK)
-}
-
-func EnhanceSentryEvent(handler http.HandlerFunc) http.HandlerFunc {
-	return func(rw http.ResponseWriter, r *http.Request) {
-		if hub := sentry.GetHubFromContext(r.Context()); hub != nil {
-			hub.Scope().SetTag("someRandomTag", "maybeYouNeedIt")
-		}
-		handler(rw, r)
-	}
-}
 
 const portNumber = ":8080"
 
@@ -45,32 +24,13 @@ var errorLog *log.Logger
 
 func main() {
 
-	// To initialize Sentry's handler, you need to initialize Sentry itself beforehand
-	if err := sentry.Init(sentry.ClientOptions{
-		Dsn:           "https://5e80ef8860d544c1ac1db0a1e4b55328@o4505127968374784.ingest.sentry.io/4505257065316352",
-		EnableTracing: true,
-		// Set TracesSampleRate to 1.0 to capture 100%
-		// of transactions for performance monitoring.
-		// We recommend adjusting this value in production,
-		TracesSampleRate: 1.0,
-		AttachStacktrace: true,
-		Debug:            true,
-		Environment:      "development",
-		// Enable this to see the full event
-		// Timeout for the event delivery requests.
-	}); err != nil {
-		fmt.Printf("Sentry initialization failed: %v\n", err)
-	}
-
-	sentry.CaptureMessage("It works!")
-	defer sentry.Flush(2 * time.Second)
+	initRollbar()
+	initSentry()
 
 	err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	setupRollbar()
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
@@ -93,10 +53,10 @@ func run() error {
 	// change this to true when in production
 	app.InProduction = false
 
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog
 
-	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	app.ErrorLog = errorLog
 
 	// set up the session
@@ -119,7 +79,8 @@ func run() error {
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
-
 	render.NewTemplates(&app)
+	helpers.NewHelpers(&app)
+
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func setupRollbar() {
+func initRollbar() {
 	rollbar.SetToken("491f9cbe3ace480dabe3544419b18221")
 	rollbar.SetEnvironment("production")                 // defaults to "development"
 	rollbar.SetCodeVersion("v2")                         // optional Git hash/branch/tag (required for GitHub integration)
