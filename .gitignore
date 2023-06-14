@@ -1,3 +1,3 @@
 .idea!/database.yml
 database.yml
-!/migrations/schema.sql
+/migrations/schema.sql
