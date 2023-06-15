@@ -37,3 +37,33 @@ type Restrictions struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }
+
+// Reservations is the reservation model object
+type Reservations struct {
+	ID        int
+	RoomID    int
+	FirstName string
+	LastName  string
+	Email     string
+	Phone     string
+	StartDate time.Time
+	EndDate   time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Room      Rooms
+}
+
+// RoomRestrictions is the room restriction model object
+type RoomRestrictions struct {
+	ID            int
+	RoomID        int
+	ReservationID int
+	RestrictionID int
+	StartDate     time.Time
+	EndDate       time.Time
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Reservation   Reservations
+	Room          Rooms
+	Restriction   Restrictions
+}
