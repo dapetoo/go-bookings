@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 // Reservation holds reservation data
 type Reservation struct {
 	FirstName string
@@ -8,7 +10,7 @@ type Reservation struct {
 	Phone     string
 }
 
-// Users holds user data
+// Users is the user model object
 type Users struct {
 	ID          int
 	FirstName   string
@@ -16,6 +18,14 @@ type Users struct {
 	Email       string
 	Password    string
 	AccessLevel int
-	CreatedAt   string
-	UpdatedAt   string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+// Room is the room model object
+type Room struct {
+	ID        int
+	RoomName  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
