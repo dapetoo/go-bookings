@@ -32,12 +32,54 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Println("All rows fetched successfully")
+
 	//Insert a row into the DB
 	query := `insert into users (first_name, last_name) values ($1, $2)`
 	_, err = conn.Exec(query, "Jack", "Nil")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = getAllRows(conn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Inserted a row successfully")
+
+	//Update a row in the DB
+	stmt := `update users set first_name = $1 where id = $2`
+	_, err = conn.Exec(stmt, "Jackie", 4)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Updated a row successfully")
+
+	//Get Row By ID
+	query = `select id, first_name, last_name from users where id = $1`
+
+	var firstName, lastName string
+	var id int
+	row := conn.QueryRow(query, 1)
+	err = row.Scan(&id, &firstName, &lastName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Query returns ", id, firstName, lastName)
+
+	err = getAllRows(conn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//Delete a row from the DB
+	query = `delete from users where id = $1`
+	_, err = conn.Exec(query, 4)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Deleted a row successfully")
 
 	err = getAllRows(conn)
 	if err != nil {
