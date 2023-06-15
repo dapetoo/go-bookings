@@ -8,6 +8,7 @@ import (
 	"github.com/dapetoo/go-bookings/internal/helpers"
 	"github.com/dapetoo/go-bookings/internal/models"
 	"github.com/dapetoo/go-bookings/internal/render"
+	"github.com/dapetoo/go-bookings/internal/repository"
 	"log"
 	"net/http"
 )
@@ -18,6 +19,7 @@ var Repo *Repository
 // Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // NewRepo creates a new repository

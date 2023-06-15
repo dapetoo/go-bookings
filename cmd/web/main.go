@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/dapetoo/go-bookings/internal/config"
+	"github.com/dapetoo/go-bookings/internal/driver"
 	"github.com/dapetoo/go-bookings/internal/handlers"
 	"github.com/dapetoo/go-bookings/internal/helpers"
 	"github.com/dapetoo/go-bookings/internal/models"
@@ -28,10 +29,12 @@ func main() {
 	initHoneyComb()
 	initSentry()
 
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer db.SQL.Close()
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
@@ -47,7 +50,7 @@ func main() {
 	//http.HandleFunc("/", sentryHandler.HandleFunc(enhanceSentryEvent(handlers.Repo.Home)))
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	// what am I going to put in the session
 	gob.Register(models.Reservation{})
 
@@ -69,10 +72,17 @@ func run() error {
 
 	app.Session = session
 
+	//Connect to database
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=postgres password=postgres")
+	if err != nil {
+		log.Fatal("Cannot connect to database! Dying...")
+	}
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
-		return err
+		return nil, err
 	}
 
 	app.TemplateCache = tc
@@ -83,5 +93,5 @@ func run() error {
 	render.NewTemplates(&app)
 	helpers.NewHelpers(&app)
 
-	return nil
+	return db, nil
 }
