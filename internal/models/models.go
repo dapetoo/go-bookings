@@ -23,9 +23,17 @@ type Users struct {
 }
 
 // Room is the room model object
-type Room struct {
+type Rooms struct {
 	ID        int
 	RoomName  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+// Restrictions is the restriction model object
+type Restrictions struct {
+	ID              int
+	RestrictionName string
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
