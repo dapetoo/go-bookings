@@ -14,6 +14,16 @@ func initRollbar() {
 
 	rollbar.Info("Message body goes here")
 	rollbar.WrapAndWait(doSomething)
+	rollbar.Wait()
+	rollbar.Critical("Message body goes here")
+	rollbar.Wait()
+	rollbar.Error(rollbar.ERR, "Message body goes here")
+	rollbar.Wait()
+	rollbar.Warning("Message body goes here")
+	rollbar.Wait()
+	rollbar.Debug("Message body goes here")
+	rollbar.Wait()
+	rollbar.Wait()
 	rollbar.Log(rollbar.INFO, "Message body goes here")
 	rollbar.Wait()
 
