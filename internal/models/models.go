@@ -7,3 +7,15 @@ type Reservation struct {
 	Email     string
 	Phone     string
 }
+
+// Users holds user data
+type Users struct {
+	ID          int
+	FirstName   string
+	LastName    string
+	Email       string
+	Password    string
+	AccessLevel int
+	CreatedAt   string
+	UpdatedAt   string
+}
