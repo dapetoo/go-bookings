@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dapetoo/go-bookings/internal/config"
+	"github.com/dapetoo/go-bookings/internal/driver"
 	"github.com/dapetoo/go-bookings/internal/forms"
 	"github.com/dapetoo/go-bookings/internal/helpers"
 	"github.com/dapetoo/go-bookings/internal/models"
 	"github.com/dapetoo/go-bookings/internal/render"
 	"github.com/dapetoo/go-bookings/internal/repository"
+	"github.com/dapetoo/go-bookings/internal/repository/dbrepo"
 	"log"
 	"net/http"
 )
@@ -23,9 +25,10 @@ type Repository struct {
 }
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 

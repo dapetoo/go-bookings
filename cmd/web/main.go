@@ -25,8 +25,8 @@ var errorLog *log.Logger
 
 func main() {
 
-	//initRollbar()
-	initHoneyComb()
+	initRollbar()
+	//initHoneyComb()
 	initSentry()
 
 	db, err := run()
@@ -79,6 +79,8 @@ func run() (*driver.DB, error) {
 		log.Fatal("Cannot connect to database! Dying...")
 	}
 
+	log.Println("Connected to database!")
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
@@ -88,7 +90,7 @@ func run() (*driver.DB, error) {
 	app.TemplateCache = tc
 	app.UseCache = false
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 	render.NewTemplates(&app)
 	helpers.NewHelpers(&app)
