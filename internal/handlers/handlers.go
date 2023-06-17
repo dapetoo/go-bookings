@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/dapetoo/go-bookings/internal/config"
 	"github.com/dapetoo/go-bookings/internal/driver"
 	"github.com/dapetoo/go-bookings/internal/forms"
@@ -251,8 +250,9 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 
 	res.Room.RoomName = room.RoomName
 
-	sd := res.StartDate.Format("2006-01-02")
-	ed := res.EndDate.Format("2006-01-02")
+	layout := "2006-01-02"
+	sd := res.StartDate.Format(layout)
+	ed := res.EndDate.Format(layout)
 
 	stringMap := make(map[string]string)
 	stringMap["start_date"] = sd
@@ -375,34 +375,57 @@ func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
 
 // PostAvailability  renders the availability page
 func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "can't parse form!")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
 
 	layout := "2006-01-02"
 	startDate, err := time.Parse(layout, start)
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't parse start date!")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
-
 	endDate, err := time.Parse(layout, end)
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't parse end date!")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
 
 	rooms, err := m.DB.SearchAvailabilityForAllRooms(startDate, endDate)
 	if err != nil {
-		helpers.ServerError(w, err)
+		m.App.Session.Put(r.Context(), "error", "can't get availability for rooms")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
 	if len(rooms) == 0 {
-		// no availablity
+		// no availability
 		m.App.Session.Put(r.Context(), "error", "No availability")
 		http.Redirect(w, r, "/search-availability", http.StatusSeeOther)
 		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("start date is %s and end date is %s", start, end)))
+	data := make(map[string]interface{})
+	data["rooms"] = rooms
+
+	res := models.Reservation{
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
+
+	m.App.Session.Put(r.Context(), "reservation", res)
+
+	render.Template(w, r, "choose-room.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
 
 type jsonResponse struct {
