@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/dapetoo/go-bookings/internal/models"
+	"time"
 )
 
 type DatabaseRepo interface {
@@ -9,6 +10,6 @@ type DatabaseRepo interface {
 
 	InsertReservation(res models.Reservation) (int, error)
 	InsertRoomRestriction(r models.RoomRestriction) error
-	//SearchAvailabilityByDatesByRoomID(start, end time.Time, roomID int) (bool, error)
-	//SearchAvailabilityForAllRooms(start, end time.Time) ([]models.Room, error)
+	SearchAvailabilityByDatesByRoomID(start, end time.Time, roomID int) (bool, error)
+	SearchAvailabilityForAllRooms(start, end time.Time) ([]models.Room, error)
 }
