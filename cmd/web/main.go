@@ -12,6 +12,7 @@ import (
 	"github.com/dapetoo/go-bookings/internal/render"
 	"log"
 	"net/http"
+	"net/smtp"
 	"os"
 	"time"
 )
@@ -35,6 +36,10 @@ func main() {
 	}
 
 	defer db.SQL.Close()
+
+	from := "me@localhost"
+	auth := smtp.PlainAuth("", from, "password", "localhost")
+	err = smtp.SendMail("localhost:1025", auth, from, []string{"you@localhost"}, []byte("Hello world!"))
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 

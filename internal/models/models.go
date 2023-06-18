@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"html/template"
+	"time"
+)
 
 // User is the user model object
 type User struct {
@@ -58,4 +61,12 @@ type RoomRestriction struct {
 	Reservation   Reservation
 	Room          Room
 	Restriction   Restriction
+}
+
+// MailData is the mail data model object
+type MailData struct {
+	To      string
+	From    string
+	Subject string
+	Content template.HTML
 }
