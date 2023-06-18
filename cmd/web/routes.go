@@ -21,6 +21,7 @@ func routes(app *config.AppConfig) http.Handler {
 	// Middleware
 	mux.Use(middleware.Recoverer)
 	mux.Use(middleware.Logger)
+	mux.Use(middleware.CleanPath)
 	mux.Use(WriteToConsole)
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
