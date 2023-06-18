@@ -8,6 +8,7 @@ require (
 	github.com/getsentry/sentry-go v0.21.0
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/jackc/pgx/v5 v5.4.0
+	github.com/joho/godotenv v1.5.1
 	github.com/justinas/nosurf v1.1.1
 	github.com/rollbar/rollbar-go v1.4.5
 	github.com/xhit/go-simple-mail/v2 v2.13.0

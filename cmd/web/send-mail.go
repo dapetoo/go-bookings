@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/dapetoo/go-bookings/internal/models"
+	"github.com/joho/godotenv"
 	mail "github.com/xhit/go-simple-mail/v2"
 	"io/ioutil"
 	"log"
@@ -21,7 +22,17 @@ func listenForMail() {
 }
 
 func sendMessage(m models.MailData) {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	server := mail.NewSMTPClient()
+	fmt.Println(os.Getenv("MAIL_SERVER"))
+	log.Println(os.Getenv("MAIL_SERVER"))
+	log.Println(os.Getenv("MAIL_USERNAME"))
+	log.Println(os.Getenv("MAIL_PASSWORD"))
 	server.Host = os.Getenv("MAIL_SERVER")
 	server.Port = 2525
 	server.Username = os.Getenv("MAIL_USERNAME")
