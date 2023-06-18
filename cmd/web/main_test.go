@@ -3,8 +3,8 @@ package main
 import "testing"
 
 func TestRun(t *testing.T) {
-	err, _ := run()
+	_, err := run()
 	if err != nil {
-		t.Error("Failed run")
+		t.Error("failed run()")
 	}
 }

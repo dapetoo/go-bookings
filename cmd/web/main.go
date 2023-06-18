@@ -26,7 +26,6 @@ var errorLog *log.Logger
 func main() {
 
 	initRollbar()
-	//initHoneyComb()
 	initSentry()
 
 	db, err := run()
@@ -35,6 +34,7 @@ func main() {
 	}
 
 	defer db.SQL.Close()
+
 	defer close(app.MailChan)
 	listenForMail()
 
@@ -61,12 +61,14 @@ func run() (*driver.DB, error) {
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
 	gob.Register(models.RoomRestriction{})
+	gob.Register(map[string]int{})
 
 	mailChan := make(chan models.MailData)
 	app.MailChan = mailChan
 
 	// change this to true when in production
 	app.InProduction = false
+	app.UseCache = false
 
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog
@@ -94,12 +96,12 @@ func run() (*driver.DB, error) {
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
+		app.ErrorLog.Println(err)
 		log.Fatal("cannot create template cache")
 		return nil, err
 	}
 
 	app.TemplateCache = tc
-	app.UseCache = false
 
 	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
