@@ -24,7 +24,7 @@ func NewPostgresRepo(conn *sql.DB, a *config.AppConfig) repository.DatabaseRepo 
 	}
 }
 
-// NewPostgresRepo creates a new repository
+// NewTestingsRepo creates a new repository
 func NewTestingsRepo(conn *sql.DB, a *config.AppConfig) repository.DatabaseRepo {
 	return &testDBRepo{
 		App: a,

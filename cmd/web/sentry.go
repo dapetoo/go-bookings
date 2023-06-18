@@ -38,7 +38,7 @@ func initSentry() {
 		// We recommend adjusting this value in production,
 		TracesSampleRate: 1.0,
 		AttachStacktrace: true,
-		Debug:            true,
+		Debug:            false,
 		Environment:      "development",
 		// Enable this to see the full event
 		// Timeout for the event delivery requests.
