@@ -6,6 +6,7 @@ import (
 	mail "github.com/xhit/go-simple-mail/v2"
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 	"time"
 )
@@ -21,8 +22,10 @@ func listenForMail() {
 
 func sendMessage(m models.MailData) {
 	server := mail.NewSMTPClient()
-	server.Host = "localhost"
-	server.Port = 1025
+	server.Host = os.Getenv("MAIL_SERVER")
+	server.Port = 2525
+	server.Username = os.Getenv("MAIL_USERNAME")
+	server.Password = os.Getenv("MAIL_PASSWORD")
 	server.KeepAlive = false
 	server.ConnectTimeout = 10 * time.Second
 	server.SendTimeout = 10 * time.Second
