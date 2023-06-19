@@ -1,12 +1,14 @@
 package main
 
 import (
-	"github.com/rollbar/rollbar-go"
+	"os"
 	"time"
+
+	"github.com/rollbar/rollbar-go"
 )
 
 func initRollbar() {
-	rollbar.SetToken("491f9cbe3ace480dabe3544419b18221")
+	rollbar.SetToken(os.Getenv("ROLLBAR_TOKEN"))
 	rollbar.SetEnvironment("production")                 // defaults to "development"
 	rollbar.SetCodeVersion("v2")                         // optional Git hash/branch/tag (required for GitHub integration)
 	rollbar.SetServerHost("web.1")                       // optional override; defaults to hostname

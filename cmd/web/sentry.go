@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/getsentry/sentry-go"
+	"log"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/getsentry/sentry-go"
+	"github.com/joho/godotenv"
 )
 
 type handler struct{}
@@ -29,9 +33,13 @@ func EnhanceSentryEvent(handler http.HandlerFunc) http.HandlerFunc {
 }
 
 func initSentry() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file")
+	}
 	// To initialize Sentry's handler, you need to initialize Sentry itself beforehand
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn:           "https://5e80ef8860d544c1ac1db0a1e4b55328@o4505127968374784.ingest.sentry.io/4505257065316352",
+		Dsn:           os.Getenv("SENTRY_DSN"),
 		EnableTracing: true,
 		// Set TracesSampleRate to 1.0 to capture 100%
 		// of transactions for performance monitoring.

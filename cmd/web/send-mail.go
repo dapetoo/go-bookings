@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/dapetoo/go-bookings/internal/models"
-	"github.com/joho/godotenv"
-	mail "github.com/xhit/go-simple-mail/v2"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/dapetoo/go-bookings/internal/models"
+	"github.com/joho/godotenv"
+	mail "github.com/xhit/go-simple-mail/v2"
 )
 
 func listenForMail() {
@@ -51,7 +51,7 @@ func sendMessage(m models.MailData) {
 	if m.Template == "" {
 		email.SetBody(mail.TextHTML, m.Content)
 	} else {
-		data, err := ioutil.ReadFile(fmt.Sprintf("./email-templates/%s", m.Template))
+		data, err := os.ReadFile(fmt.Sprintf("./email-templates/%s", m.Template))
 		if err != nil {
 			app.ErrorLog.Println(err)
 		}
