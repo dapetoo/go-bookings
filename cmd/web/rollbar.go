@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
 	"os"
 	"time"
 
@@ -8,6 +9,10 @@ import (
 )
 
 func initRollbar() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(err)
+	}
 	rollbar.SetToken(os.Getenv("ROLLBAR_TOKEN"))
 	rollbar.SetEnvironment("production")                 // defaults to "development"
 	rollbar.SetCodeVersion("v2")                         // optional Git hash/branch/tag (required for GitHub integration)
