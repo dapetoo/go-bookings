@@ -45,6 +45,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/reservation-summary", handlers.Repo.ReservationSummary)
 
 	mux.Get("/user/login", sentryHandler.HandleFunc(EnhanceSentryEvent(handlers.Repo.ShowLogin)))
+	mux.Post("/user/login", sentryHandler.HandleFunc(EnhanceSentryEvent(handlers.Repo.PostShowLogin)))
 
 	// File server
 	fileServer := http.FileServer(http.Dir("./static/"))

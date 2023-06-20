@@ -10,6 +10,7 @@ import (
 	"github.com/dapetoo/go-bookings/internal/render"
 	"github.com/dapetoo/go-bookings/internal/repository"
 	"github.com/dapetoo/go-bookings/internal/repository/dbrepo"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -458,4 +459,34 @@ func (m *Repository) ShowLogin(writer http.ResponseWriter, request *http.Request
 	render.Template(writer, request, "login.page.tmpl", &models.TemplateData{
 		Form: forms.New(nil),
 	})
+}
+
+// PostShowLogin handles the login form
+func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
+	_ = m.App.Session.RenewToken(r.Context())
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+	}
+
+	form := forms.New(r.PostForm)
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+	form.Required("email", "password")
+	if !form.Valid() {
+		// TODO: Take user back to login page and show them the errors
+	}
+
+	id, _, err := m.DB.Authenticate(email, password)
+	if err != nil {
+		log.Println(err)
+		m.App.Session.Put(r.Context(), "error", "Invalid login credentials")
+		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+		return
+	}
+
+	m.App.Session.Put(r.Context(), "user_id", id)
+	m.App.Session.Put(r.Context(), "flash", "Logged in successfully")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
 }
