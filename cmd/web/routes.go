@@ -55,6 +55,9 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Route("/admin", func(mux chi.Router) {
 		mux.Use(Auth)
 		mux.Get("/dashboard", sentryHandler.HandleFunc(EnhanceSentryEvent(handlers.Repo.AdminDashboard)))
+		mux.Get("/reservations-new", sentryHandler.HandleFunc(EnhanceSentryEvent(handlers.Repo.AdminNewReservations)))
+		mux.Get("/reservations-all", sentryHandler.HandleFunc(EnhanceSentryEvent(handlers.Repo.AdminAllReservations)))
+		mux.Get("/reservations-calendar", sentryHandler.HandleFunc(EnhanceSentryEvent(handlers.Repo.AdminReservationsCalendar)))
 	})
 
 	return mux
