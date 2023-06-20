@@ -141,9 +141,7 @@ func (m *postgresDBRepo) GetRoomByID(id int) (models.Room, error) {
 
 	var room models.Room
 
-	query := `
-		select id, room_name, created_at, updated_at from rooms where id = $1
-`
+	query := `select id, room_name, created_at, updated_at from rooms where id = $1`
 
 	row := m.DB.QueryRowContext(ctx, query, id)
 	err := row.Scan(
@@ -166,7 +164,10 @@ func (m *postgresDBRepo) GetUserByID(id int) (models.User, error) {
 	defer cancel()
 
 	query := `
-	select id, first_name, last_name, email, password, access_level, created_at, updated_at from users where id = $1`
+	select 
+	    id, first_name, last_name, email, password, access_level, created_at, updated_at 
+	from users 
+	where id = $1`
 
 	row := m.DB.QueryRowContext(ctx, query, id)
 
@@ -187,5 +188,4 @@ func (m *postgresDBRepo) GetUserByID(id int) (models.User, error) {
 	}
 
 	return u, nil
-
 }
