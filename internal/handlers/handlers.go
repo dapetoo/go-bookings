@@ -540,6 +540,14 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 	})
 }
 
+func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+
+	render.Template(w, r, "admin-reservations-show.page.tmpl", &models.TemplateData{
+		Data:      data,
+		StringMap: stringMap,
+	})
+}
+
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }
