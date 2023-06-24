@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// User is the user model object
+// User is the user model
 type User struct {
 	ID          int
 	FirstName   string
@@ -16,7 +16,7 @@ type User struct {
 	UpdatedAt   time.Time
 }
 
-// Room is the room model object
+// Room is the room model
 type Room struct {
 	ID        int
 	RoomName  string
@@ -24,7 +24,7 @@ type Room struct {
 	UpdatedAt time.Time
 }
 
-// Restriction is the restriction model object
+// Restriction is the restriction model
 type Restriction struct {
 	ID              int
 	RestrictionName string
@@ -32,38 +32,38 @@ type Restriction struct {
 	UpdatedAt       time.Time
 }
 
-// Reservation is the reservation model object
+// Reservation is the reservation model
 type Reservation struct {
 	ID        int
-	RoomID    int
 	FirstName string
 	LastName  string
 	Email     string
 	Phone     string
 	StartDate time.Time
 	EndDate   time.Time
+	RoomID    int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Room      Room
 	Processed int
 }
 
-// RoomRestriction is the room restriction model object
+// RoomRestriction is the room restriction model
 type RoomRestriction struct {
 	ID            int
+	StartDate     time.Time
+	EndDate       time.Time
 	RoomID        int
 	ReservationID int
 	RestrictionID int
-	StartDate     time.Time
-	EndDate       time.Time
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	Reservation   Reservation
 	Room          Room
+	Reservation   Reservation
 	Restriction   Restriction
 }
 
-// MailData is the mail data model object
+// MailData holds an email message
 type MailData struct {
 	To       string
 	From     string
